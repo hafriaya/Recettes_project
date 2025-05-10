@@ -1,13 +1,194 @@
 {% extends 'base.html' %}
 
-{% block title %}What's in My Fridge{% endblock %}
+{% block title %}Dans Mon Frigo{% endblock %}
 
 {% block content %}
-<h1 class="text-4xl font-bold text-center text-blue-600 mb-8">What's in My Fridge</h1>
-<form method="post" class="space-y-4">
-    {% csrf_token %}
-    <label for="ingredients" class="block text-lg font-semibold">Enter Ingredients (comma-separated):</label>
-    <input type="text" name="ingredients" id="ingredients" class="w-full p-2 border rounded">
-    <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded">Find Recipes</button>
-</form>
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <!-- Header Section -->
+    <div class="text-center mb-8">
+        <div class="relative inline-block mb-4">
+            <i class="fas fa-refrigerator text-5xl text-culinary-500"></i>
+            <div class="absolute -top-2 -right-2 bg-culinary-100 rounded-full w-8 h-8 flex items-center justify-center">
+                <i class="fas fa-bolt text-culinary-600 text-xs"></i>
+            </div>
+        </div>
+        <h1 class="text-3xl font-extrabold text-gray-900 mb-2">Dans Mon Frigo</h1>
+        <p class="text-lg text-gray-600">Sélectionnez les ingrédients pour voir les recettes correspondantes</p>
+    </div>
+
+    <div class="flex flex-col lg:flex-row gap-8">
+        <!-- Ingredients Panel -->
+        <div class="lg:w-1/3 bg-white p-6 rounded-xl shadow-md border-t-4 border-culinary-500">
+            <div class="sticky top-4">
+                <h2 class="text-xl font-bold text-gray-800 mb-4 flex items-center">
+                    <i class="fas fa-check-circle text-culinary-500 mr-2"></i>
+                    Ingrédients Disponibles
+                </h2>
+                
+                <!-- Search -->
+                <div class="relative mb-6">
+                    <input type="text" id="ingredientSearch" placeholder="Rechercher des ingrédients..." 
+                        class="w-full pl-10 pr-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-culinary-500 focus:border-transparent">
+                    <i class="fas fa-search absolute left-3 top-3 text-gray-400"></i>
+                </div>
+
+                <!-- Categories -->
+                <div class="space-y-4" id="ingredientCategories">
+                    {% for category_name, category_data in ingredients_by_category.items %}
+                    <div class="border border-gray-200 rounded-lg overflow-hidden">
+                        <button class="accordion-header w-full flex justify-between items-center p-3 bg-gray-50 hover:bg-gray-100 transition-colors"
+                            onclick="toggleAccordion(this)">
+                            <div class="flex items-center">
+                                <i class="{{ category_data.icon }} text-culinary-500 mr-2"></i>
+                                <span class="font-medium">{{ category_name }}</span>
+                            </div>
+                            <i class="fas fa-chevron-down transition-transform duration-300"></i>
+                        </button>
+                        <div class="accordion-content hidden p-3 bg-white">
+                            <div class="grid grid-cols-2 gap-2">
+                                {% for ingredient in category_data.ingredients %}
+                                <label class="flex items-center space-x-2 p-2 rounded hover:bg-culinary-50 transition-colors cursor-pointer">
+                                    <input type="checkbox" name="ingredients" value="{{ ingredient.nom }}" 
+                                        class="ingredient-checkbox h-4 w-4 text-culinary-600 rounded focus:ring-culinary-500 border-gray-300"
+                                        onchange="filterRecipes()">
+                                    <span class="text-sm text-gray-700">{{ ingredient.nom }}</span>
+                                </label>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+
+                <div class="mt-6 flex justify-between">
+                    <button onclick="clearSelections()" class="text-sm text-culinary-600 hover:text-culinary-800 flex items-center">
+                        <i class="fas fa-times mr-1"></i> Tout effacer
+                    </button>
+                    <span id="selectedCount" class="text-sm text-gray-500">0 sélectionné(s)</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Recipes Panel -->
+        <div class="lg:w-2/3">
+            <div class="bg-white p-6 rounded-xl shadow-md mb-6">
+                <div class="flex justify-between items-center mb-4">
+                    <h2 class="text-xl font-bold text-gray-800 flex items-center">
+                        <i class="fas fa-utensils text-culinary-500 mr-2"></i>
+                        Recettes Correspondantes
+                    </h2>
+                    <span id="recipeCount" class="text-sm bg-culinary-100 text-culinary-800 px-3 py-1 rounded-full">
+                        {{ all_recipes|length }} disponibles
+                    </span>
+                </div>
+
+                <!-- Results -->
+                <div id="recipeResults" class="space-y-4">
+                    {% for recipe in all_recipes %}
+                    <div class="recipe-card p-4 border border-gray-200 rounded-lg hover:border-culinary-300 transition-colors duration-200"
+                        data-ingredients="{% for ing in recipe.ingredients.all %}{{ ing.nom|lower }}{% if not forloop.last %},{% endif %}{% endfor %}"
+                        data-time="{{ recipe.temps_preparation }}">
+                        <div class="flex items-start">
+                            <img src="../static/images/Image-not-found.png" alt="{{ recipe.nom }}" 
+                                class="w-20 h-20 object-cover rounded-lg mr-4">
+                            <div class="flex-1">
+                                <h3 class="font-bold text-gray-800">{{ recipe.nom }}</h3>
+                                <p class="text-sm text-gray-600 mt-1 line-clamp-2">{{ recipe.description }}</p>
+                                <div class="flex items-center mt-2 space-x-4">
+                                    <span class="text-xs text-gray-500 flex items-center">
+                                        <i class="fas fa-clock mr-1 text-culinary-500"></i>
+                                        {{ recipe.temps_preparation }} min
+                                    </span>
+                                    <span class="text-xs text-gray-500 flex items-center">
+                                        <i class="fas fa-carrot mr-1 text-culinary-500"></i>
+                                        {{ recipe.ingredients.count }} ingrédients
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% empty %}
+                    <div class="text-center py-8 text-gray-500">
+                        Aucune recette disponible
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Filter recipes
+    function filterRecipes() {
+        const selected = Array.from(document.querySelectorAll('.ingredient-checkbox:checked'))
+            .map(cb => cb.value.toLowerCase());
+        
+        document.getElementById('selectedCount').textContent = `${selected.length} sélectionné(s)`;
+        
+        const recipes = document.querySelectorAll('.recipe-card');
+        let visible = 0;
+        
+        recipes.forEach(recipe => {
+            const ingredients = recipe.dataset.ingredients.split(',');
+            const matches = selected.length === 0 || selected.some(ing => ingredients.includes(ing));
+            
+            recipe.style.display = matches ? 'block' : 'none';
+            if (matches) visible++;
+        });
+        
+        document.getElementById('recipeCount').textContent = `${visible} correspondante(s)`;
+    }
+
+    // Accordion
+    function toggleAccordion(btn) {
+        const content = btn.nextElementSibling;
+        const icon = btn.querySelector('.fa-chevron-down');
+        content.classList.toggle('hidden');
+        icon.classList.toggle('rotate-180');
+    }
+
+    // Clear selections
+    function clearSelections() {
+        document.querySelectorAll('.ingredient-checkbox').forEach(cb => cb.checked = false);
+        filterRecipes();
+    }
+
+    // Search ingredients
+    document.getElementById('ingredientSearch').addEventListener('input', function(e) {
+        const term = e.target.value.toLowerCase();
+        document.querySelectorAll('#ingredientCategories label').forEach(label => {
+            const text = label.textContent.toLowerCase();
+            if (text.includes(term)) {
+                label.style.display = 'flex';
+                label.closest('.accordion-content').classList.remove('hidden');
+                label.closest('.accordion-header').querySelector('.fa-chevron-down').classList.remove('rotate-180');
+            } else {
+                label.style.display = 'none';
+            }
+        });
+    });
+
+    // Initialize
+    document.addEventListener('DOMContentLoaded', filterRecipes);
+</script>
+
+<style>
+    .recipe-card {
+        transition: all 0.3s ease;
+    }
+    .recipe-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    }
+    .line-clamp-2 {
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+    }
+    .rotate-180 {
+        transform: rotate(180deg);
+    }
+</style>
 {% endblock %}
