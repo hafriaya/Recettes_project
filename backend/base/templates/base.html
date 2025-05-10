@@ -13,14 +13,24 @@
         <div class="container mx-auto px-4 py-4 flex justify-between items-center">
             <h1 class="text-2xl font-bold">Recettes</h1>
             <nav>
-                <ul class="flex space-x-4">
-                    <li><a href="/" class="hover:underline">Accueil</a></li>
-                    <li><a href="/recettes/" class="hover:underline">Recettes</a></li>
-                    <li><a href="/fridge/" class="hover:underline">What's in My Fridge</a></li>
+                <ul class="flex space-x-6 text-lg">
+                    <li><a href="/" class="hover:underline hover:text-gray-200 transition duration-200">Accueil</a></li>
+                    <li><a href="/recettes/" class="hover:underline hover:text-gray-200">Recettes</a></li>
+                    <li><a href="/fridge/" class="hover:underline hover:text-gray-200">What's in My Fridge</a></li>
                     <li>
                         <form method="get" action="/search/" class="inline-block">
-                            <input type="text" name="q" placeholder="Search..." class="p-1 rounded">
-                            <button type="submit" class="bg-blue-500 text-white px-2 rounded">Go</button>
+                            <input 
+                                type="text" 
+                                name="q" 
+                                placeholder="Search..." 
+                                class="p-2 rounded text-black border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                            >
+                            <button 
+                                type="submit" 
+                                class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-700 transition"
+                            >
+                                Go
+                            </button>
                         </form>
                     </li>
                 </ul>
