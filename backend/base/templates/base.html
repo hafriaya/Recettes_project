@@ -1,0 +1,38 @@
+<!-- filepath: /Users/hafriaya/Development/3IIR/S6/Django/Recettes_project/backend/base/templates/base.html -->
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Recettes{% endblock %}</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100">
+    <!-- Header with Navbar -->
+    <header class="bg-blue-600 text-white">
+        <div class="container mx-auto px-4 py-4 flex justify-between items-center">
+            <h1 class="text-2xl font-bold">Recettes</h1>
+            <nav>
+                <ul class="flex space-x-4">
+                    <li><a href="/" class="hover:underline">Accueil</a></li>
+                    <li><a href="/recettes/" class="hover:underline">Recettes</a></li>
+                    <li><a href="/about/" class="hover:underline">À propos</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="container mx-auto px-4 py-8">
+        {% block content %}
+        {% endblock %}
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-gray-800 text-white py-4">
+        <div class="container mx-auto text-center">
+            <p>&copy; 2025 Recettes. Tous droits réservés.</p>
+        </div>
+    </footer>
+</body>
+</html>
