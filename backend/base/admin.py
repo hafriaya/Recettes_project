@@ -16,7 +16,7 @@ class RecetteAdmin(admin.ModelAdmin):
     readonly_fields = ('date_creation', 'date_modification')
     fieldsets = (
         ('Information de base', {
-            'fields': ('nom', 'temps_preparation', 'description')
+            'fields': ('nom', 'temps_preparation', 'description', 'image')  # Added 'image'
         }),
         ('Ingrédients', {
             'fields': ('ingredients',)

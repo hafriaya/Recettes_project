@@ -8,7 +8,7 @@
         <!-- Recipe Header with Image -->
         <div class="relative h-64 md:h-80 lg:h-96">
             <img 
-                src="../static/images/Image-not-found.png" 
+                src="{% if recette.image %}{{ recette.image.url }}{% else %}../static/images/Image-not-found.png{% endif %}" 
                 alt="{{ recette.nom }}" 
                 class="w-full h-full object-cover"
             >

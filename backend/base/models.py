@@ -27,6 +27,7 @@ class Recette(models.Model):
     description = models.TextField(verbose_name='Description')
     ingredients = models.ManyToManyField(Ingredient, verbose_name='Ingrédients')
     instructions = models.TextField(verbose_name='Instructions', blank=True)
+    image = models.ImageField(upload_to='recettes/', blank=True, null=True, verbose_name='Image de la recette')  # New field
     date_creation = models.DateTimeField(auto_now_add=True)
     date_modification = models.DateTimeField(auto_now=True)
     

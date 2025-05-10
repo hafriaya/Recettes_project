@@ -85,12 +85,15 @@
                 <!-- Results -->
                 <div id="recipeResults" class="space-y-4">
                     {% for recipe in all_recipes %}
-                    <div class="recipe-card p-4 border border-gray-200 rounded-lg hover:border-culinary-300 transition-colors duration-200"
+                    <a href="{% url 'recette_detail' recipe.id %}" class="block recipe-card p-4 border border-gray-200 rounded-lg hover:border-culinary-300 transition-colors duration-200"
                         data-ingredients="{% for ing in recipe.ingredients.all %}{{ ing.nom|lower }}{% if not forloop.last %},{% endif %}{% endfor %}"
                         data-time="{{ recipe.temps_preparation }}">
                         <div class="flex items-start">
-                            <img src="../static/images/Image-not-found.png" alt="{{ recipe.nom }}" 
-                                class="w-20 h-20 object-cover rounded-lg mr-4">
+                            <img 
+                                src="{% if recipe.image %}{{ recipe.image.url }}{% else %}../static/images/Image-not-found.png{% endif %}" 
+                                alt="{{ recipe.nom }}" 
+                                class="w-20 h-20 object-cover rounded-lg mr-4"
+                            >
                             <div class="flex-1">
                                 <h3 class="font-bold text-gray-800">{{ recipe.nom }}</h3>
                                 <p class="text-sm text-gray-600 mt-1 line-clamp-2">{{ recipe.description }}</p>
@@ -106,7 +109,7 @@
                                 </div>
                             </div>
                         </div>
-                    </div>
+                    </a>
                     {% empty %}
                     <div class="text-center py-8 text-gray-500">
                         Aucune recette disponible
