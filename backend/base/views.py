@@ -1,33 +1,67 @@
 from django.shortcuts import render
 from django.views import View
-from .models import Recette
+from .models import Recette, Ingredient
+from django.db.models import Q
+from django.views.generic import DetailView
 
 class Home(View):
     def get(self, request):
-        return render(request, 'hello.html', {})
+        return render(request, 'hello.html')
 
 class ListeRecettes(View):
     def get(self, request):
-        recettes = Recette.objects.all()
+        recettes = Recette.objects.prefetch_related('ingredients').all()
         return render(request, 'listeRecettes.html', {'recettes': recettes})
 
 class WhatsInMyFridge(View):
     def get(self, request):
-        return render(request, 'fridge.html', {})
-
-    def post(self, request):
-        ingredients = request.POST.getlist('ingredients')
-        recettes = Recette.objects.filter(
-            ingredients__icontains=','.join(ingredients)
-        )
-        return render(request, 'fridge_results.html', {'recettes': recettes})
+        categories = dict(Ingredient.CATEGORIES)
+        ingredients_by_category = {}
+        
+        for category_code, category_name in Ingredient.CATEGORIES:
+            ingredients = Ingredient.objects.filter(
+                categorie=category_code
+            ).order_by('nom')
+            if ingredients.exists():
+                ingredients_by_category[category_name] = {
+                    'icon': self.get_category_icon(category_code),
+                    'ingredients': ingredients
+                }
+        
+        return render(request, 'fridge.html', {
+            'all_recipes': Recette.objects.prefetch_related('ingredients').all(),
+            'ingredients_by_category': ingredients_by_category
+        })
+    
+    def get_category_icon(self, category):
+        icons = {
+            'legumes': 'fas fa-carrot',
+            'viandes': 'fas fa-drumstick-bite',
+            'produits_laitiers': 'fas fa-cheese',
+            'epicerie': 'fas fa-wheat-alt',
+            'fruits': 'fas fa-apple-alt',
+            'herbes': 'fas fa-leaf'
+        }
+        return icons.get(category, 'fas fa-question')
 
 class SearchRecettes(View):
     def get(self, request):
-        query = request.GET.get('q', '')
+        query = request.GET.get('q', '').strip()
+        if not query:
+            return render(request, 'search_results.html', {'recettes': [], 'query': query})
+        
         recettes = Recette.objects.filter(
-            nom__icontains=query
-        ) | Recette.objects.filter(
-            ingredients__icontains=query
-        )
-        return render(request, 'search_results.html', {'recettes': recettes, 'query': query})
+            Q(nom__icontains=query) |
+            Q(description__icontains=query) |
+            Q(ingredients__nom__icontains=query)
+        ).distinct().prefetch_related('ingredients')
+        
+        return render(request, 'search_results.html', {
+            'recettes': recettes,
+            'query': query
+        })
+    
+class RecetteDetailView(DetailView):
+    model = Recette
+    template_name = 'recette_detail.html'
+    context_object_name = 'recette'
