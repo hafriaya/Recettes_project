@@ -1,4 +1,3 @@
-<!-- filepath: /Users/hafriaya/Development/3IIR/S6/Django/Recettes_project/backend/base/templates/base.html -->
 <!DOCTYPE html>
 <html lang="fr">
 <head>
@@ -6,30 +5,66 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}Recettes{% endblock %}</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'culinary': {
+                            '50': '#fff1f2',
+                            '100': '#ffe4e6',
+                            '200': '#fecdd3',
+                            '300': '#fda4af',
+                            '400': '#fb7185',
+                            '500': '#f43f5e',
+                            '600': '#e11d48',
+                            '700': '#be123c',
+                            '800': '#9f1239',
+                            '900': '#881337',
+                        }
+                    },
+                    fontFamily: {
+                        'sans': ['"Poppins"', 'sans-serif'],
+                    },
+                    animation: {
+                        'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                    }
+                }
+            }
+        }
+    </script>
 </head>
-<body class="bg-gray-100">
+<body class="bg-gradient-to-br from-gray-50 to-gray-100 font-sans">
     <!-- Header with Navbar -->
-    <header class="bg-blue-600 text-white">
-        <div class="container mx-auto px-4 py-4 flex justify-between items-center">
-            <h1 class="text-2xl font-bold">Recettes</h1>
+    <header class="bg-gradient-to-r from-culinary-600 to-culinary-800 text-white shadow-lg">
+        <div class="container mx-auto px-4 py-4 flex flex-col md:flex-row justify-between items-center">
+            <div class="flex items-center space-x-2 mb-4 md:mb-0">
+                <i class="fas fa-utensils text-3xl"></i>
+                <h1 class="text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-white to-gray-200">Food.ma</h1>
+            </div>
             <nav>
-                <ul class="flex space-x-6 text-lg">
-                    <li><a href="/" class="hover:underline hover:text-gray-200 transition duration-200">Accueil</a></li>
-                    <li><a href="/recettes/" class="hover:underline hover:text-gray-200">Recettes</a></li>
-                    <li><a href="/fridge/" class="hover:underline hover:text-gray-200">What's in My Fridge</a></li>
-                    <li>
-                        <form method="get" action="/search/" class="inline-block">
-                            <input 
-                                type="text" 
-                                name="q" 
-                                placeholder="Search..." 
-                                class="p-2 rounded text-black border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                            >
+                <ul class="flex flex-wrap justify-center space-x-2 md:space-x-6 text-lg">
+                    <li><a href="/" class="px-3 py-2 rounded-lg hover:bg-culinary-500 transition-all duration-300 flex items-center"><i class="fas fa-home mr-2"></i>Accueil</a></li>
+                    <li><a href="/recettes/" class="px-3 py-2 rounded-lg hover:bg-culinary-500 transition-all duration-300 flex items-center"><i class="fas fa-book mr-2"></i>Recettes</a></li>
+                    <li><a href="/fridge/" class="px-3 py-2 rounded-lg hover:bg-culinary-500 transition-all duration-300 flex items-center"><i class="fas fa-refrigerator mr-2"></i>My Fridge</a></li>
+                    <li class="mt-2 md:mt-0">
+                        <form method="get" action="/search/" class="flex items-center space-x-2">
+                            <div class="relative">
+                                <input 
+                                    type="text" 
+                                    name="q" 
+                                    placeholder="Search recipes..." 
+                                    class="pl-10 pr-4 py-2 w-full md:w-64 rounded-full text-black border border-gray-300 focus:outline-none focus:ring-2 focus:ring-culinary-500 focus:border-transparent shadow-sm"
+                                >
+                                <i class="fas fa-search absolute left-3 top-3 text-gray-400"></i>
+                            </div>
                             <button 
                                 type="submit" 
-                                class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-700 transition"
+                                class="bg-culinary-500 text-white px-4 py-2 rounded-full hover:bg-culinary-700 transition-all duration-300 shadow-md hover:shadow-lg flex items-center"
                             >
-                                Go
+                                <span class="hidden md:inline">Search</span>
+                                <i class="fas fa-arrow-right ml-1"></i>
                             </button>
                         </form>
                     </li>
@@ -39,15 +74,22 @@
     </header>
 
     <!-- Main Content -->
-    <main class="container mx-auto px-4 py-8">
+    <main class="container mx-auto px-4 py-8 min-h-screen">
         {% block content %}
         {% endblock %}
     </main>
 
     <!-- Footer -->
-    <footer class="bg-gray-800 text-white py-4">
+    <footer class="bg-gradient-to-r from-gray-800 to-gray-900 text-white py-6 shadow-inner">
         <div class="container mx-auto text-center">
-            <p>&copy; 2025 Recettes. Tous droits réservés.</p>
+            <div class="flex justify-center space-x-6 mb-4">
+                <a href="#" class="text-gray-300 hover:text-white transition-colors duration-300"><i class="fab fa-facebook-f text-xl"></i></a>
+                <a href="#" class="text-gray-300 hover:text-white transition-colors duration-300"><i class="fab fa-twitter text-xl"></i></a>
+                <a href="#" class="text-gray-300 hover:text-white transition-colors duration-300"><i class="fab fa-instagram text-xl"></i></a>
+                <a href="#" class="text-gray-300 hover:text-white transition-colors duration-300"><i class="fab fa-pinterest text-xl"></i></a>
+            </div>
+            <p class="text-gray-300">&copy; 2025 Food.ma | Tous droits réservés.</p>
+            <p class="text-gray-400 text-sm mt-2">Made with <i class="fas fa-heart text-culinary-500"></i> for food lovers</p>
         </div>
     </footer>
 </body>

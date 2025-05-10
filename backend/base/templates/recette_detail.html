@@ -1,0 +1,84 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ recette.nom }} - Détails{% endblock %}
+
+{% block content %}
+<div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+    <div class="bg-white rounded-xl shadow-lg overflow-hidden">
+        <!-- Recipe Header with Image -->
+        <div class="relative h-64 md:h-80 lg:h-96">
+            <img 
+                src="../static/images/Image-not-found.png" 
+                alt="{{ recette.nom }}" 
+                class="w-full h-full object-cover"
+            >
+            <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
+            <div class="absolute bottom-0 left-0 right-0 p-6 md:p-8">
+                <h1 class="text-3xl md:text-4xl font-bold text-white">{{ recette.nom }}</h1>
+                <div class="flex items-center mt-4 space-x-4">
+                    <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-white/90 text-culinary-800">
+                        <i class="fas fa-clock mr-1"></i> {{ recette.temps_preparation }} min
+                    </span>
+                    <span class="inline-flex items-center text-white text-sm">
+                        <i class="fas fa-user-friends mr-1"></i> 4 portions
+                    </span>
+                </div>
+            </div>
+            <div class="absolute top-4 right-4">
+                <button class="bg-white/90 text-culinary-600 p-3 rounded-full shadow-md hover:bg-white hover:text-culinary-700 transition-colors duration-300">
+                    <i class="far fa-heart text-xl"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- Recipe Content -->
+        <div class="p-6 md:p-8">
+            <!-- Description -->
+            <div class="mb-8">
+                <h2 class="text-xl font-bold text-gray-800 mb-4 flex items-center">
+                    <i class="fas fa-align-left text-culinary-500 mr-2"></i>
+                    Description
+                </h2>
+                <p class="text-gray-600">{{ recette.description }}</p>
+            </div>
+
+            <!-- Ingredients -->
+            <div class="mb-8">
+                <h2 class="text-xl font-bold text-gray-800 mb-4 flex items-center">
+                    <i class="fas fa-carrot text-culinary-500 mr-2"></i>
+                    Ingrédients
+                </h2>
+                <ul class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                    {% for ingredient in recette.ingredients.split %}
+                    <li class="flex items-start">
+                        <span class="flex-shrink-0 h-6 w-6 text-culinary-500 mr-2 mt-1">
+                            <i class="fas fa-circle text-xs"></i>
+                        </span>
+                        <span class="text-gray-700">{{ ingredient }}</span>
+                    </li>
+                    {% endfor %}
+                </ul>
+            </div>
+
+            <!-- Instructions -->
+            <div class="mb-8">
+                <h2 class="text-xl font-bold text-gray-800 mb-4 flex items-center">
+                    <i class="fas fa-list-ol text-culinary-500 mr-2"></i>
+                    Instructions
+                </h2>
+                <div class="prose max-w-none text-gray-600">
+                    {{ recette.instructions|linebreaks }}
+                </div>
+            </div>
+
+            <!-- Back Button -->
+            <div class="mt-8">
+                <a href="{% url 'recettes' %}" class="inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-md shadow-sm text-white bg-culinary-600 hover:bg-culinary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-culinary-500">
+                    <i class="fas fa-arrow-left mr-2"></i>
+                    Retour au catalogue
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

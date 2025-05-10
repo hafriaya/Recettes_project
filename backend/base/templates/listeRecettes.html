@@ -1,40 +1,99 @@
-<!-- filepath: /Users/hafriaya/Development/3IIR/S6/Django/Recettes_project/backend/base/templates/listeRecettes.html -->
 {% extends 'base.html' %}
 
 {% block title %}Catalogue des Recettes{% endblock %}
 
 {% block content %}
-<h1 class="text-4xl font-bold text-center text-blue-600 mb-8 pb-4 border-b-4 border-blue-600">
-    Catalogue des Recettes
-</h1>
-<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-    {% for recette in recettes %}
-    <div class="bg-white rounded-lg shadow-lg overflow-hidden transform transition hover:scale-105 hover:shadow-2xl">
-        <img 
-            src="../static/images/Image-not-found.png" 
-            alt="{{ recette.nom }}" 
-            class="w-full h-48 object-cover"
-        >
-        <div class="p-6">
-            <h2 class="text-2xl font-semibold text-blue-700 mb-4 pb-2 border-b-2 border-blue-400">
-                {{ recette.nom }}
-            </h2>
-            <div class="space-y-2">
-                <p class="text-gray-700">
-                    <span class="font-bold text-gray-900">Temps de préparation :</span> 
-                    {{ recette.temps_preparation }} minutes
-                </p>
-                <p class="text-gray-600">
-                    <span class="font-bold text-gray-900">Description :</span> 
-                    {{ recette.description }}
-                </p>
-                <p class="text-gray-600">
-                    <span class="font-bold text-gray-900">Ingrédients :</span> 
-                    {{ recette.ingredients }}
-                </p>
-            </div>
-        </div>
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+    <div class="text-center mb-12">
+        <h1 class="text-5xl font-extrabold text-gray-900 mb-4 relative inline-block">
+            <span class="relative z-10">
+                <span class="bg-clip-text text-transparent bg-gradient-to-r from-culinary-500 to-culinary-700">
+                    Catalogue des Recettes
+                </span>
+            </span>
+            <span class="absolute bottom-0 left-0 right-0 h-3 bg-culinary-100 rounded-full z-0"></span>
+        </h1>
+        <p class="text-xl text-gray-600 max-w-2xl mx-auto">Parcourez notre collection de délicieuses recettes</p>
     </div>
-    {% endfor %}
+
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+        {% for recette in recettes %}
+        <a href="{% url 'recette_detail' recette.id %}" class="block transform transition-all duration-300 hover:scale-[1.03] hover:shadow-xl">
+            <div class="bg-white rounded-xl shadow-lg overflow-hidden border-b-4 border-culinary-500 group h-full flex flex-col">
+                <div class="relative overflow-hidden h-56 flex-shrink-0">
+                    <img 
+                        src="../static/images/Image-not-found.png" 
+                        alt="{{ recette.nom }}" 
+                        class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                    >
+                    <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
+                    <div class="absolute bottom-0 left-0 right-0 p-4">
+                        <h2 class="text-2xl font-bold text-white">{{ recette.nom }}</h2>
+                    </div>
+                    <div class="absolute top-4 right-4">
+                        <button class="bg-white/90 text-culinary-600 p-2 rounded-full shadow-md hover:bg-white hover:text-culinary-700 transition-colors duration-300">
+                            <i class="far fa-heart"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="p-6 flex-grow flex flex-col">
+                    <div class="flex justify-between items-center mb-4">
+                        <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-culinary-100 text-culinary-800">
+                            <i class="fas fa-clock mr-1"></i> {{ recette.temps_preparation }} min
+                        </span>
+                        <span class="text-sm text-gray-500">
+                            <i class="fas fa-user-friends mr-1"></i> 4 portions
+                        </span>
+                    </div>
+                    
+                    <p class="text-gray-600 mb-4 line-clamp-2 flex-grow">{{ recette.description }}</p>
+                    
+                    <div class="mb-4">
+                        <h3 class="text-sm font-semibold text-gray-900 mb-2 flex items-center">
+                            <i class="fas fa-carrot text-culinary-500 mr-2"></i>
+                            Ingrédients principaux:
+                        </h3>
+                        <p class="text-gray-600 text-sm line-clamp-2">{{ recette.ingredients }}</p>
+                    </div>
+                    
+                    <div class="mt-auto">
+                        <span class="inline-flex items-center text-culinary-600 hover:text-culinary-800 font-medium transition-colors duration-300">
+                            Voir la recette complète
+                            <i class="fas fa-chevron-right ml-1 text-sm"></i>
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </a>
+        {% empty %}
+        <div class="col-span-full text-center py-12 bg-white rounded-xl shadow-md">
+            <i class="fas fa-utensils text-5xl text-culinary-400 mb-4"></i>
+            <h3 class="text-2xl font-semibold text-gray-700 mb-2">Aucune recette disponible</h3>
+            <p class="text-gray-500">Revenez plus tard pour des délicieuses recettes!</p>
+        </div>
+        {% endfor %}
+    </div>
+    
+    {% if recettes %}
+    <div class="mt-12 flex justify-center">
+        <nav class="inline-flex rounded-md shadow">
+            <a href="#" class="px-4 py-2 rounded-l-md border border-gray-300 bg-white text-gray-700 hover:bg-gray-50">
+                <i class="fas fa-chevron-left"></i>
+            </a>
+            <a href="#" class="px-4 py-2 border-t border-b border-gray-300 bg-white text-gray-700 hover:bg-gray-50">
+                1
+            </a>
+            <a href="#" class="px-4 py-2 border border-gray-300 bg-white text-gray-700 hover:bg-gray-50">
+                2
+            </a>
+            <a href="#" class="px-4 py-2 border-t border-b border-gray-300 bg-white text-gray-700 hover:bg-gray-50">
+                3
+            </a>
+            <a href="#" class="px-4 py-2 rounded-r-md border border-gray-300 bg-white text-gray-700 hover:bg-gray-50">
+                <i class="fas fa-chevron-right"></i>
+            </a>
+        </nav>
+    </div>
+    {% endif %}
 </div>
 {% endblock %}
