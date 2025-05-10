@@ -16,7 +16,13 @@
                 <ul class="flex space-x-4">
                     <li><a href="/" class="hover:underline">Accueil</a></li>
                     <li><a href="/recettes/" class="hover:underline">Recettes</a></li>
-                    <li><a href="/about/" class="hover:underline">À propos</a></li>
+                    <li><a href="/fridge/" class="hover:underline">What's in My Fridge</a></li>
+                    <li>
+                        <form method="get" action="/search/" class="inline-block">
+                            <input type="text" name="q" placeholder="Search..." class="p-1 rounded">
+                            <button type="submit" class="bg-blue-500 text-white px-2 rounded">Go</button>
+                        </form>
+                    </li>
                 </ul>
             </nav>
         </div>
