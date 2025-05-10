@@ -8,4 +8,5 @@ urlpatterns = [
     path('fridge/', views.WhatsInMyFridge.as_view(), name='fridge'),
     path('search/', views.SearchRecettes.as_view(), name='search'),
     path('recettes/<int:pk>/', views.RecetteDetailView.as_view(), name='recette_detail'),
+    path('recettes/<int:pk>/toggle_favorite/', views.toggle_favorite, name='toggle_favorite'),  # New route
 ]

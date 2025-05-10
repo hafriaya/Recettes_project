@@ -1,5 +1,12 @@
 from django.contrib import admin
-from .models import Ingredient, Recette
+from .models import Recette, Ingredient
+
+@admin.register(Recette)
+class RecetteAdmin(admin.ModelAdmin):
+    list_display = ('nom', 'temps_preparation', 'portions', 'favorite', 'date_creation')
+    list_filter = ('date_creation', 'favorite')
+    search_fields = ('nom', 'description', 'ingredients__nom')
+    filter_horizontal = ('ingredients',)
 
 class IngredientAdmin(admin.ModelAdmin):
     list_display = ('nom', 'categorie')
@@ -8,28 +15,4 @@ class IngredientAdmin(admin.ModelAdmin):
     ordering = ('nom',)
     list_per_page = 20
 
-class RecetteAdmin(admin.ModelAdmin):
-    list_display = ('nom', 'temps_preparation', 'date_creation')
-    list_filter = ('date_creation',)
-    search_fields = ('nom', 'description', 'ingredients__nom')
-    filter_horizontal = ('ingredients',)
-    readonly_fields = ('date_creation', 'date_modification')
-    fieldsets = (
-        ('Information de base', {
-            'fields': ('nom', 'temps_preparation', 'description', 'image')  # Added 'image'
-        }),
-        ('Ingrédients', {
-            'fields': ('ingredients',)
-        }),
-        ('Instructions', {
-            'fields': ('instructions',)
-        }),
-        ('Dates', {
-            'fields': ('date_creation', 'date_modification'),
-            'classes': ('collapse',)
-        }),
-    )
-    list_per_page = 20
-
 admin.site.register(Ingredient, IngredientAdmin)
-admin.site.register(Recette, RecetteAdmin)

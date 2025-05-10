@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+{% load static %}
 
 {% block title %}Catalogue des Recettes{% endblock %}
 
@@ -18,11 +19,11 @@
 
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
         {% for recette in recettes %}
-        <a href="{% url 'recette_detail' recette.id %}" class="block transform transition-all duration-300 hover:scale-[1.03] hover:shadow-xl">
-            <div class="bg-white rounded-xl shadow-lg overflow-hidden border-b-4 border-culinary-500 group h-full flex flex-col">
+        <div class="group transform transition-all duration-300 hover:scale-[1.03] hover:shadow-xl">
+            <div class="bg-white rounded-xl shadow-lg overflow-hidden border-b-4 border-culinary-500 h-full flex flex-col">
                 <div class="relative overflow-hidden h-56 flex-shrink-0">
                     <img 
-                        src="{% if recette.image %}{{ recette.image.url }}{% else %}../static/images/Image-not-found.png{% endif %}" 
+                        src="{% if recette.image %}{{ recette.image.url }}{% else %}{% static 'images/Image-not-found.png' %}{% endif %}" 
                         alt="{{ recette.nom }}" 
                         class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
                     >
@@ -31,40 +32,43 @@
                         <h2 class="text-2xl font-bold text-white">{{ recette.nom }}</h2>
                     </div>
                     <div class="absolute top-4 right-4">
-                        <button class="bg-white/90 text-culinary-600 p-2 rounded-full shadow-md hover:bg-white hover:text-culinary-700 transition-colors duration-300">
-                            <i class="far fa-heart"></i>
+                        <button 
+                            class="favorite-btn bg-white/90 p-2 rounded-full shadow-md hover:bg-white transition-colors duration-300"
+                            data-recipe-id="{{ recette.id }}"
+                            data-favorite-url="{% url 'toggle_favorite' recette.id %}"
+                        >
+                            <i class="{% if recette.favorite %}fas text-red-500{% else %}far{% endif %} fa-heart"></i>
                         </button>
                     </div>
                 </div>
-                <div class="p-6 flex-grow flex flex-col">
-                    <div class="flex justify-between items-center mb-4">
-                        <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-culinary-100 text-culinary-800">
-                            <i class="fas fa-clock mr-1"></i> {{ recette.temps_preparation }} min
-                        </span>
-                        <span class="text-sm text-gray-500">
-                            <i class="fas fa-user-friends mr-1"></i> 4 portions
-                        </span>
+                <a href="{% url 'recette_detail' recette.id %}" class="flex-grow flex flex-col">
+                    <div class="p-6 flex-grow flex flex-col">
+                        <div class="flex justify-between items-center mb-4">
+                            <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-culinary-100 text-culinary-800">
+                                <i class="fas fa-clock mr-1"></i> {{ recette.temps_preparation }} min
+                            </span>
+                            <span class="text-sm text-gray-500">
+                                <i class="fas fa-user-friends mr-1"></i> {{ recette.portions }} portions
+                            </span>
+                        </div>
+                        <p class="text-gray-600 mb-4 line-clamp-2 flex-grow">{{ recette.description }}</p>
+                        <div class="mb-4">
+                            <h3 class="text-sm font-semibold text-gray-900 mb-2 flex items-center">
+                                <i class="fas fa-carrot text-culinary-500 mr-2"></i>
+                                Ingrédients principaux:
+                            </h3>
+                            <p class="text-gray-600 text-sm line-clamp-2">{{ recette.ingredients }}</p>
+                        </div>
+                        <div class="mt-auto">
+                            <span class="inline-flex items-center text-culinary-600 hover:text-culinary-800 font-medium transition-colors duration-300">
+                                Voir la recette complète
+                                <i class="fas fa-chevron-right ml-1 text-sm"></i>
+                            </span>
+                        </div>
                     </div>
-                    
-                    <p class="text-gray-600 mb-4 line-clamp-2 flex-grow">{{ recette.description }}</p>
-                    
-                    <div class="mb-4">
-                        <h3 class="text-sm font-semibold text-gray-900 mb-2 flex items-center">
-                            <i class="fas fa-carrot text-culinary-500 mr-2"></i>
-                            Ingrédients principaux:
-                        </h3>
-                        <p class="text-gray-600 text-sm line-clamp-2">{{ recette.ingredients }}</p>
-                    </div>
-                    
-                    <div class="mt-auto">
-                        <span class="inline-flex items-center text-culinary-600 hover:text-culinary-800 font-medium transition-colors duration-300">
-                            Voir la recette complète
-                            <i class="fas fa-chevron-right ml-1 text-sm"></i>
-                        </span>
-                    </div>
-                </div>
+                </a>
             </div>
-        </a>
+        </div>
         {% empty %}
         <div class="col-span-full text-center py-12 bg-white rounded-xl shadow-md">
             <i class="fas fa-utensils text-5xl text-culinary-400 mb-4"></i>
@@ -96,4 +100,6 @@
     </div>
     {% endif %}
 </div>
+
+<script src="{% static 'js/toggle_favorite.js' %}"></script>
 {% endblock %}

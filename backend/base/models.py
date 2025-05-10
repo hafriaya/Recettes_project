@@ -27,7 +27,9 @@ class Recette(models.Model):
     description = models.TextField(verbose_name='Description')
     ingredients = models.ManyToManyField(Ingredient, verbose_name='Ingrédients')
     instructions = models.TextField(verbose_name='Instructions', blank=True)
-    image = models.ImageField(upload_to='recettes/', blank=True, null=True, verbose_name='Image de la recette')  # New field
+    image = models.ImageField(upload_to='recettes/', blank=True, null=True, verbose_name='Image de la recette')
+    portions = models.IntegerField(default=4, verbose_name='Nombre de portions')  # New field for portions
+    favorite = models.BooleanField(default=False, verbose_name='Favori')  # New field for favorite
     date_creation = models.DateTimeField(auto_now_add=True)
     date_modification = models.DateTimeField(auto_now=True)
     

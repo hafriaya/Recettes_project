@@ -1,8 +1,9 @@
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
 from django.views import View
 from .models import Recette, Ingredient
 from django.db.models import Q
 from django.views.generic import DetailView
+from django.http import JsonResponse
 
 class Home(View):
     def get(self, request):
@@ -65,3 +66,11 @@ class RecetteDetailView(DetailView):
     model = Recette
     template_name = 'recette_detail.html'
     context_object_name = 'recette'
+
+def toggle_favorite(request, pk):
+    if request.method == 'POST':
+        recette = get_object_or_404(Recette, pk=pk)
+        recette.favorite = not recette.favorite
+        recette.save()
+        return JsonResponse({'favorite': recette.favorite})
+    return JsonResponse({'error': 'Invalid request'}, status=400)
