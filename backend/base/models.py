@@ -8,6 +8,7 @@ class Ingredient(models.Model):
         ('epicerie', 'Épicerie'),
         ('fruits', 'Fruits'),
         ('herbes', 'Herbes et Épices'),
+        ('feculents', 'Féculents'),
     ]
     
     nom = models.CharField(max_length=100, unique=True)
