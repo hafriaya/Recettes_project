@@ -57,7 +57,14 @@
                                 <i class="fas fa-carrot text-culinary-500 mr-2"></i>
                                 Ingrédients principaux:
                             </h3>
-                            <p class="text-gray-600 text-sm line-clamp-2">{{ recette.ingredients }}</p>
+                            <p class="text-gray-600 text-sm line-clamp-2">
+                                {% for ingredient in recette.ingredients.all|slice:":3" %}
+                                    {{ ingredient.nom }}{% if not forloop.last %}, {% endif %}
+                                {% endfor %}
+                                {% if recette.ingredients.count > 3 %}
+                                    ...
+                                {% endif %}
+                            </p>
                         </div>
                         <div class="mt-auto">
                             <span class="inline-flex items-center text-culinary-600 hover:text-culinary-800 font-medium transition-colors duration-300">

@@ -54,13 +54,15 @@
                     Ingrédients
                 </h2>
                 <ul class="grid grid-cols-1 md:grid-cols-2 gap-3">
-                    {% for ingredient in recette.ingredients.split %}
+                    {% for ingredient in recette.ingredients.all %}
                     <li class="flex items-start">
                         <span class="flex-shrink-0 h-6 w-6 text-culinary-500 mr-2 mt-1">
                             <i class="fas fa-circle text-xs"></i>
                         </span>
-                        <span class="text-gray-700">{{ ingredient }}</span>
+                        <span class="text-gray-700">{{ ingredient.nom }}</span>
                     </li>
+                    {% empty %}
+                    <li class="text-gray-500">No ingredients listed</li>
                     {% endfor %}
                 </ul>
             </div>
