@@ -17,8 +17,14 @@
         <p class="text-xl text-gray-600 max-w-2xl mx-auto">Parcourez notre collection de délicieuses recettes</p>
     </div>
 
+    <div class="text-center mb-12">
+        <a href="{% url 'ajouter_recette' %}" class="bg-culinary-600 text-white px-6 py-3 rounded-lg hover:bg-culinary-700 transition-all duration-300">
+            <i class="fas fa-plus mr-2"></i> Ajouter une Recette
+        </a>
+    </div>
+
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-        {% for recette in recettes %}
+        {% for recette in page_obj %}
         <div class="group transform transition-all duration-300 hover:scale-[1.03] hover:shadow-xl">
             <div class="bg-white rounded-xl shadow-lg overflow-hidden border-b-4 border-culinary-500 h-full flex flex-col">
                 <div class="relative overflow-hidden h-56 flex-shrink-0">
@@ -85,24 +91,52 @@
         {% endfor %}
     </div>
     
-    {% if recettes %}
+    {% if page_obj.paginator.num_pages > 1 %}
     <div class="mt-12 flex justify-center">
-        <nav class="inline-flex rounded-md shadow">
-            <a href="#" class="px-4 py-2 rounded-l-md border border-gray-300 bg-white text-gray-700 hover:bg-gray-50">
-                <i class="fas fa-chevron-left"></i>
-            </a>
-            <a href="#" class="px-4 py-2 border-t border-b border-gray-300 bg-white text-gray-700 hover:bg-gray-50">
-                1
-            </a>
-            <a href="#" class="px-4 py-2 border border-gray-300 bg-white text-gray-700 hover:bg-gray-50">
-                2
-            </a>
-            <a href="#" class="px-4 py-2 border-t border-b border-gray-300 bg-white text-gray-700 hover:bg-gray-50">
-                3
-            </a>
-            <a href="#" class="px-4 py-2 rounded-r-md border border-gray-300 bg-white text-gray-700 hover:bg-gray-50">
-                <i class="fas fa-chevron-right"></i>
-            </a>
+        <nav class="flex items-center space-x-1">
+            {% if page_obj.has_previous %}
+                <a href="?page={{ page_obj.previous_page_number }}" class="p-2 rounded-md border border-gray-300 bg-white text-gray-700 hover:bg-gray-50">
+                    <span class="sr-only">Précédent</span>
+                    <i class="fas fa-chevron-left w-5 h-5"></i>
+                </a>
+            {% endif %}
+
+            {% if page_obj.number|add:'-3' > 1 %}
+                <a href="?page=1" class="hidden sm:inline-flex items-center px-4 py-2 border border-gray-300 bg-white text-gray-700 hover:bg-gray-50">
+                    1
+                </a>
+                <span class="hidden sm:inline-flex items-center px-2 text-gray-500">...</span>
+            {% endif %}
+
+            {% for num in page_obj.paginator.page_range %}
+                {% if page_obj.number == num %}
+                    <span class="inline-flex items-center px-4 py-2 border border-culinary-500 bg-culinary-50 text-culinary-600 font-medium">
+                        {{ num }}
+                    </span>
+                {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
+                    <a href="?page={{ num }}" class="hidden sm:inline-flex items-center px-4 py-2 border border-gray-300 bg-white text-gray-700 hover:bg-gray-50">
+                        {{ num }}
+                    </a>
+                {% endif %}
+            {% endfor %}
+
+            {% if page_obj.number|add:'3' < page_obj.paginator.num_pages %}
+                <span class="hidden sm:inline-flex items-center px-2 text-gray-500">...</span>
+                <a href="?page={{ page_obj.paginator.num_pages }}" class="hidden sm:inline-flex items-center px-4 py-2 border border-gray-300 bg-white text-gray-700 hover:bg-gray-50">
+                    {{ page_obj.paginator.num_pages }}
+                </a>
+            {% endif %}
+
+            {% if page_obj.has_next %}
+                <a href="?page={{ page_obj.next_page_number }}" class="p-2 rounded-md border border-gray-300 bg-white text-gray-700 hover:bg-gray-50">
+                    <span class="sr-only">Suivant</span>
+                    <i class="fas fa-chevron-right w-5 h-5"></i>
+                </a>
+            {% endif %}
+
+            <span class="sm:hidden text-sm text-gray-500 px-2">
+                Page {{ page_obj.number }} sur {{ page_obj.paginator.num_pages }}
+            </span>
         </nav>
     </div>
     {% endif %}

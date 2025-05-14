@@ -1,0 +1,132 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Ajouter une Recette{% endblock %}
+
+{% block content %}
+<div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+    <div class="text-center mb-12">
+        <h1 class="text-4xl font-extrabold text-gray-900 mb-4 relative inline-block">
+            <span class="relative z-10">
+                <span class="bg-clip-text text-transparent bg-gradient-to-r from-culinary-500 to-culinary-700">
+                    Ajouter une Recette
+                </span>
+            </span>
+            <span class="absolute bottom-0 left-0 right-0 h-3 bg-culinary-100 rounded-full z-0"></span>
+        </h1>
+        <p class="text-xl text-gray-600 max-w-2xl mx-auto">Partagez votre création culinaire avec notre communauté</p>
+    </div>
+
+    <div class="bg-white rounded-xl shadow-lg overflow-hidden border-b-4 border-culinary-500">
+        <div class="p-8">
+            <form method="post" enctype="multipart/form-data" class="space-y-6">
+                {% csrf_token %}
+                
+                <!-- Basic Information -->
+                <div class="space-y-4">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <!-- Name -->
+                        <div>
+                            <label for="{{ form.nom.id_for_label }}" class="block text-sm font-medium text-gray-700">
+                                Nom de la recette
+                            </label>
+                            {{ form.nom }}
+                        </div>
+
+                        <!-- Preparation Time -->
+                        <div>
+                            <label for="{{ form.temps_preparation.id_for_label }}" class="block text-sm font-medium text-gray-700">
+                                Temps de préparation (minutes)
+                            </label>
+                            {{ form.temps_preparation }}
+                        </div>
+                    </div>
+
+                    <!-- Portions -->
+                    <div>
+                        <label for="{{ form.portions.id_for_label }}" class="block text-sm font-medium text-gray-700">
+                            Nombre de portions
+                        </label>
+                        {{ form.portions }}
+                    </div>
+
+                    <!-- Description -->
+                    <div>
+                        <label for="{{ form.description.id_for_label }}" class="block text-sm font-medium text-gray-700">
+                            Description
+                        </label>
+                        {{ form.description }}
+                    </div>
+                </div>
+
+                <!-- Ingredients Section -->
+                <div class="mt-8">
+                    <label for="{{ form.ingredients.id_for_label }}" class="block text-sm font-medium text-gray-700">
+                        Ingrédients
+                    </label>
+                    {{ form.ingredients }}
+                    <p class="mt-2 text-sm text-gray-500">
+                        Pour sélectionner plusieurs ingrédients:
+                        <br>- Maintenez Ctrl (⌘ sur Mac) en cliquant pour sélectionner plusieurs ingrédients
+                        <br>- Ou maintenez Shift pour sélectionner une plage d'ingrédients
+                    </p>
+                </div>
+
+                <!-- Instructions -->
+                <div class="mt-8">
+                    <label for="{{ form.instructions.id_for_label }}" class="block text-sm font-medium text-gray-700">
+                        Instructions
+                    </label>
+                    {{ form.instructions }}
+                </div>
+
+                <!-- Image Upload -->
+                <div class="mt-8">
+                    <label for="{{ form.image.id_for_label }}" class="block text-sm font-medium text-gray-700">
+                        Image de la recette
+                    </label>
+                    {{ form.image }}
+                </div>
+                
+                <div class="mt-8 flex justify-center space-x-4">
+                    <button type="submit" class="bg-culinary-600 text-white px-8 py-3 rounded-lg hover:bg-culinary-700 transition-all duration-300 flex items-center">
+                        <i class="fas fa-utensils mr-2"></i> Ajouter la Recette
+                    </button>
+                    <a href="{% url 'recettes' %}" class="border border-gray-300 text-gray-700 px-8 py-3 rounded-lg hover:bg-gray-50 transition-all duration-300 flex items-center">
+                        <i class="fas fa-times mr-2"></i> Annuler
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<style>
+    .form-input,
+    .form-select,
+    form textarea {
+        width: 100%;
+        padding: 0.75rem;
+        border: 1px solid #d1d5db;
+        border-radius: 0.5rem;
+        background-color : #f9fafb;
+    }
+    
+    .form-select:focus,
+    form textarea:focus {
+        border-color: #e76f51;
+        box-shadow: 0 0 0 3px rgba(231, 111, 81, 0.1);
+        outline: none;
+    }
+
+    /* Error messages */
+    .errorlist {
+        @apply text-red-500 text-sm mt-1;
+    }
+
+    /* Help text */
+    .helptext {
+        @apply text-sm text-gray-500 mt-1 block;
+    }
+</style>
+{% endblock %}

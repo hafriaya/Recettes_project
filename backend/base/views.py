@@ -1,9 +1,11 @@
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render, get_object_or_404, redirect
 from django.views import View
 from .models import Recette, Ingredient
 from django.db.models import Q
 from django.views.generic import DetailView
 from django.http import JsonResponse
+from django.core.paginator import Paginator
+from .forms import RecetteForm
 
 class Home(View):
     def get(self, request):
@@ -11,8 +13,12 @@ class Home(View):
 
 class ListeRecettes(View):
     def get(self, request):
-        recettes = Recette.objects.prefetch_related('ingredients').all()
-        return render(request, 'listeRecettes.html', {'recettes': recettes})
+        recettes_list = Recette.objects.prefetch_related('ingredients').all()
+        paginator = Paginator(recettes_list, 6)  # 6 recipes per page
+        page_number = request.GET.get('page')
+        page_obj = paginator.get_page(page_number)
+        return render(request, 'listeRecettes.html', {'page_obj': page_obj})
+    
 
 class WhatsInMyFridge(View):
     def get(self, request):
@@ -74,3 +80,15 @@ def toggle_favorite(request, pk):
         recette.save()
         return JsonResponse({'favorite': recette.favorite})
     return JsonResponse({'error': 'Invalid request'}, status=400)
+
+class AjouterRecette(View):
+    def get(self, request):
+        form = RecetteForm()
+        return render(request, 'ajouter_recette.html', {'form': form})
+
+    def post(self, request):
+        form = RecetteForm(request.POST, request.FILES)
+        if form.is_valid():
+            form.save()
+            return redirect('recettes')  # Redirect to the recipe list after saving
+        return render(request, 'ajouter_recette.html', {'form': form})
